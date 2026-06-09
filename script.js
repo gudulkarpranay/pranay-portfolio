@@ -132,13 +132,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', updateActiveNav);
     updateActiveNav(); // Run initially
 
-    // 7. Contact Form Simulation & Feedback
+    // 7. Web3Forms Integration & Feedback
     const contactForm = document.getElementById('contact-form');
     const submitBtn = document.getElementById('submit-btn');
     const formFeedback = document.getElementById('form-feedback');
 
     if (contactForm && submitBtn && formFeedback) {
-        contactForm.addEventListener('submit', (e) => {
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             // Set loading state on button
@@ -149,25 +149,44 @@ document.addEventListener('DOMContentLoaded', () => {
             formFeedback.textContent = '';
             formFeedback.className = 'form-feedback';
 
-            // Simulate form submission API call
-            setTimeout(() => {
-                // Restore button
+            const formData = new FormData(contactForm);
+
+            try {
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.status === 200 && data.success) {
+                    // On successful submission show success message instead of the form
+                    contactForm.innerHTML = `
+                        <div class="form-success-message" style="text-align: center; padding: 2.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;">
+                            <i data-lucide="check-circle" style="width: 48px; height: 48px; color: var(--accent-cyan);"></i>
+                            <p style="font-family: var(--font-title); font-size: 1.25rem; font-weight: 600; line-height: 1.5; color: var(--text-primary);">
+                                Thanks for reaching out! I'll get back to you within 24 hours 🙌
+                            </p>
+                        </div>
+                    `;
+                    // Re-initialize Lucide to render the check-circle icon
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+                } else {
+                    // API reported error
+                    formFeedback.textContent = 'Something went wrong. Please WhatsApp me directly.';
+                    formFeedback.className = 'form-feedback error';
+                    btnSpan.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                // Network error
+                formFeedback.textContent = 'Something went wrong. Please WhatsApp me directly.';
+                formFeedback.className = 'form-feedback error';
                 btnSpan.textContent = originalText;
                 submitBtn.disabled = false;
-
-                // Show success feedback
-                formFeedback.textContent = 'Thanks! Your message has been sent successfully.';
-                formFeedback.classList.add('success');
-
-                // Clear input fields
-                contactForm.reset();
-
-                // Clear feedback after 5 seconds
-                setTimeout(() => {
-                    formFeedback.textContent = '';
-                    formFeedback.className = 'form-feedback';
-                }, 5000);
-            }, 1800);
+            }
         });
     }
 });
