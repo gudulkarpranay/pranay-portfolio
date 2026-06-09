@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="form-success-message" style="text-align: center; padding: 2.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;">
                             <i data-lucide="check-circle" style="width: 48px; height: 48px; color: var(--accent-cyan);"></i>
                             <p style="font-family: var(--font-title); font-size: 1.25rem; font-weight: 600; line-height: 1.5; color: var(--text-primary);">
-                                Thanks for reaching out! I'll get back to you within 24 hours 🙌
+                                Thanks for reaching out! I'll get back to you within 2-3 hours 🙌
                             </p>
                         </div>
                     `;
